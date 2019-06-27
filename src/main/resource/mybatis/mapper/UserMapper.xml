@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 门店表的映射文件	namespace值为对应接口的全路径 -->
+<mapper namespace="com.friend.dao.UserMapper">
+
+    <!-- 1.查询所有门店信息，id值为对应接口中方法的名字
+        resultType指定将查询的结果封装到哪个pojo对象中
+     -->
+    <select id="findAll" resultType="com.friend.pojo.User">
+		select * from fd_user
+	</select>
+
+	<select id="findperson" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select id from fd_user where 1=1
+			<if test="gender != null and gender != ''">
+				and gender=#{gender}
+			</if>
+			<if test="height != null and height != ''">
+				and height>#{height}
+			</if>
+			<if test="salary != null and salary != ''">
+				and salary>#{salary}
+			</if>
+			<if test="charact != null and charact != ''">
+				and charact=#{charact}
+			</if>
+	</select>
+
+    <select id="findByup" resultType="com.friend.pojo.User">
+		select * from fd_user where username=#{0} and password=#{1}
+	</select>
+
+	<select id="findUserByName" resultType="com.friend.pojo.User">
+		select * from fd_user where username=#{0}
+	</select>
+
+    <update id="insertByInfo" parameterType="com.friend.pojo.User">
+		insert into fd_user values(null,#{username},#{password},#{role},#{gender},#{charact},#{salary},#{height},#{email})
+	</update>
+
+	<select id="findMainPic" resultType="com.friend.pojo.MainPic">
+		select * from fd_mainpic where user_id=#{0}
+	</select>
+
+	<select id="findUserById" resultType="com.friend.pojo.User">
+		select * from fd_user where id=#{0}
+	</select>
+
+	<select id="findPicById" resultType="java.lang.String">
+		select url from fd_images where user_id=#{0}
+	</select>
+
+	<select id="checklike" resultType="java.lang.Integer">
+		select id from fd_like where fromid=#{0} and toid=#{1}
+	</select>
+
+	<update id="changelike">
+		update fd_like set islike=#{2} where fromid=#{0} and toid=#{1}
+	</update>
+
+	<update id="addlike">
+		insert into fd_like values(null,#{0},#{1},#{2})
+	</update>
+
+	<select id="findfriend" resultType="java.lang.Integer">
+		select id from fd_addfriend where fromid=#{0} and toid=#{1}
+	</select>
+
+	<update id="pendingfriend">
+		insert into fd_addfriend values(null,#{0},#{1})
+	</update>
+
+	<select id="findappealfriend" resultType="com.friend.pojo.Appealfriend">
+		select t1.id,t1.username from fd_user t1, fd_addfriend t2 where t2.toid=#{0} and t1.id=t2.fromid
+	</select>
+
+	<update id="addtofriend">
+		insert into fd_friend values(null,#{1},#{0})
+	</update>
+
+	<update id="deleteappeal">
+		delete from fd_addfriend where fromid=#{1} and toid=#{0}
+	</update>
+
+	<update id="addpic">
+		insert into fd_images values(null,#{0},#{1})
+	</update>
+
+	<update id="setmainpic">
+		update fd_mainpic set url=#{1} where user_id=#{0}
+	</update>
+
+
+	<update id="deletepic">
+		delete from fd_images where user_id=#{0} and url=#{1}
+	</update>
+
+	<update id="updateinfo">
+		update fd_user set gender=#{0}, charact=#{1},
+		salary=#{2}, height=#{3}, email=#{4} where id=#{5}
+	</update>
+
+	<select id="findaddedfriend" resultType="java.lang.Integer">
+		select toid from fd_friend where fromid=#{0}
+	</select>
+
+	<update id="deletefriendbyid">
+		delete from fd_friend where fromid=#{0} and toid=#{1}
+	</update>
+
+	<update id="createmainpic">
+		insert into fd_mainpic values(null, #{0}, #{1}, null);
+	</update>
+
+	<update id="setmessage">
+		insert into fd_message values(null, #{0}, #{1}, #{2});
+	</update>
+
+	<select id="getmessage" resultType="java.lang.String">
+		select message from fd_message where fromid=#{1} and toid=#{0}
+	</select>
+
+</mapper>
